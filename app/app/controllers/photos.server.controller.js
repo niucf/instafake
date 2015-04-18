@@ -15,12 +15,35 @@ exports.create = function(req, res) {
 	var photo = new Photo(req.body);
 	photo.user = req.user;
 
+	console.log(req.body);
 	photo.save(function(err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
+			//creates the path for storing the image
+			var tempPath = req.files.file.path;
+			ext = path.extname(req.files.file.name).toLowerCase(),
+			targetPath = path.resolve('./public/upload/' + imgUrl + ext);
+
+			//checks to make sure we're getting an image, then stores it if valid
+			if (ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.gif') {
+				fs.rename(tempPath, targetPath, function(err) { 
+					if (err) { 
+						throw err; 
+					}
+
+				});
+			} else {
+				fs.unlink(tempPath, function () {
+					if (err) {
+						throw err;
+					}
+
+					res.json(500, {error: 'Only image files are allowed.'});
+				});
+			}
 			res.jsonp(photo);
 		}
 	});

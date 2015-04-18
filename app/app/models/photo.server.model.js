@@ -23,6 +23,9 @@ var PhotoSchema = new Schema({
 	user: {
 		type: Schema.ObjectId,
 		ref: 'User'
+	},
+	filename : {
+		type : String
 	}
 });
 

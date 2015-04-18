@@ -1,17 +1,33 @@
 'use strict';
 
 // Photos controller
-angular.module('photos').controller('PhotosController', ['$scope', '$stateParams', '$location', 'Authentication', 'Photos',
-	function($scope, $stateParams, $location, Authentication, Photos) {
+angular.module('photos').controller('PhotosController', ['$scope', '$stateParams', '$location', 'Authentication', 'Photos', '$upload',
+	function($scope, $stateParams, $location, Authentication, Photos, $upload) {
 		$scope.authentication = Authentication;
 
 		// Create new Photo
-		$scope.create = function() {
+		$scope.create = function(upload) {
+			console.log("PICFILE " + upload);
 			// Create new Photo object
 			var photo = new Photos ({
 				name: this.name
 			});
 
+			$upload.upload({
+			    url: '/photos', 
+			    method: 'POST', 
+			    headers: {'Content-Type': 'multipart/form-data'},
+			    fields: {name: photo.name},
+			    file: upload,               
+			}).success(function (response, status) {
+			      $location.path('photos/' + response._id);
+
+			    $scope.title = '';
+			    $scope.content = '';
+			}).error(function (err) {
+				$scope.error = err.data.message;
+			});
+/*
 			// Redirect after save
 			photo.$save(function(response) {
 				$location.path('photos/' + response._id);
@@ -21,6 +37,7 @@ angular.module('photos').controller('PhotosController', ['$scope', '$stateParams
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
+*/
 		};
 
 		// Remove existing Photo
