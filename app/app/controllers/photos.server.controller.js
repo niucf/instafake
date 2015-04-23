@@ -1,4 +1,7 @@
 'use strict';
+var fs = require('fs');
+var path = require('path');
+var Finder = require('fs-finder');
 
 /**
  * Module dependencies.
@@ -12,48 +15,56 @@ var mongoose = require('mongoose'),
  * Create a Photo
  */
 exports.create = function(req, res) {
-	var photo = new Photo(req.body);
-	photo.user = req.user;
-
-	console.log(req.body);
-	photo.save(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			//creates the path for storing the image
-			var tempPath = req.files.file.path;
-			ext = path.extname(req.files.file.name).toLowerCase(),
-			targetPath = path.resolve('./public/upload/' + imgUrl + ext);
-
-			//checks to make sure we're getting an image, then stores it if valid
-			if (ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.gif') {
-				fs.rename(tempPath, targetPath, function(err) { 
-					if (err) { 
-						throw err; 
-					}
-
-				});
-			} else {
-				fs.unlink(tempPath, function () {
-					if (err) {
-						throw err;
-					}
-
-					res.json(500, {error: 'Only image files are allowed.'});
-				});
-			}
-			res.jsonp(photo);
-		}
-	});
+  var photo = new Photo(req.body);
+  photo.user = req.user;
+  photo.likes.push(req.user._id);
+  console.log(req.files.file);
+  if(req.files.file) {
+    photo.image =req.files.file.path.substring(req.files.file.path.indexOf(path.sep)+path.sep.length-1);
+  }  else
+    photo.image='default.jpg';
+  photo.save(function(err) {
+    if (err) {
+      console.log('detected error:',errorHandler.getErrorMessage(err));
+      return res.status(400).send({
+	message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.json({_id:photo._id});
+    }
+  });
 };
 
 /**
  * Show the current Photo
  */
 exports.read = function(req, res) {
-	res.jsonp(req.photo);
+  var photo = req.photo;
+  //  photo = _.extend(photo , req.body);
+  photo.views += 1;
+
+  var containsValue = 0;
+
+  // Determine if user is already in 
+  for(var i=0; i<req.photo.likes.length; i++) {
+    console.log('Comparing ' + req.photo.likes[i] + ' to ' + req.user._id + ' is ' + req.photo.likes[i].equals(req.user._id));
+    if(req.photo.likes[i].equals(req.user._id)) {
+      containsValue = true;
+    }
+  }
+
+
+  photo.save(function(err) {
+    if (err) {
+      console.log('Problem'+err);
+      return res.status(400).send({
+	message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(photo);
+      //res.jsonp(photo);
+    }
+  });
 };
 
 /**
@@ -105,6 +116,35 @@ exports.list = function(req, res) {
 			res.jsonp(photos);
 		}
 	});
+};
+
+/**
+ * Likes a photo
+ */
+exports.like = function(req, res) {
+  var user = req.user;
+  var containsValue = false;
+
+  // Determine if user is already in 
+  for(var i=0; i<req.photo.likes.length; i++) {
+    console.log('Comparing ' + req.photo.likes[i] + ' to ' + req.user._id + ' is ' + req.photo.likes[i].equals(req.user._id));
+    if(req.photo.likes[i].equals(req.user._id)) {
+      containsValue = true;
+    }
+  }
+  if(!containsValue) {
+	req.photo.likes.push(req.user._id);
+  }
+
+  req.photo.save(function(err) {
+    if (err) {
+      return res.status(400).send({
+		message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(req.photo);
+	 }
+  });
 };
 
 /**

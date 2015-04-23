@@ -16,6 +16,34 @@ var PhotoSchema = new Schema({
 		required: 'Please fill Photo name',
 		trim: true
 	},
+    	image: {
+		type: String,
+		default: ''
+        },
+	created: {
+		type: Date,
+		default: Date.now
+	},
+	user: {
+		type: Schema.ObjectId,
+		ref: 'User'
+	},
+	views: {
+		type: Number,
+		default: 0
+	},
+	likes: [{
+		type: Schema.ObjectId,
+		ref: 'User'
+	}]
+});
+/*var PhotoSchema = new Schema({
+	name: {
+		type: String,
+		default: '',
+		required: 'Please fill Photo name',
+		trim: true
+	},
 	created: {
 		type: Date,
 		default: Date.now
@@ -28,5 +56,5 @@ var PhotoSchema = new Schema({
 		type : String
 	}
 });
-
+*/
 mongoose.model('Photo', PhotoSchema);
