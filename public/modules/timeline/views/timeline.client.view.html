@@ -1,0 +1,56 @@
+	<div ng-controller="TimelineController">
+
+	<form id="global-chat-form" action="">
+		<input type="text" id="m" />
+		<button class="btn-lg btn-info">Send</button>
+	</form>
+		
+		<panel class="panel-default">
+			
+			<div class="panel-heading">
+				<h2>The Chat Room!</h2>
+			</div>
+
+			<div class="panel-body">
+				
+				<div id="global-chat-messages" class="list-group">
+				  <div class="list-group-item">
+				  	
+				  	<h4>Author</h4>
+				  	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus labore minus nemo, repudiandae quaerat porro laborum animi soluta voluptatum facere.</p>
+				  	
+				  </div>
+				</div>
+
+			</div>
+
+		</panel>
+  	</div>
+
+	</div>
+
+	<script>
+
+		jQuery(document).ready(function(){
+
+			'use strict';
+
+				var socket = io();
+
+			  $('#global-chat-form').submit(function(){
+
+		  			console.log('submitted');
+
+				    socket.emit('chat message', $('#m').val());
+
+				    console.log('m = '+$('#m').val());
+
+			    	$('#m').val('');
+			    	return false;
+			  });
+
+			
+		});
+
+
+	</script>

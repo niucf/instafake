@@ -1,0 +1,25 @@
+<section data-ng-controller="CommentsController" data-ng-init="findForPhoto(photo)">
+    <div class="list-group">
+        <a data-ng-repeat="comment in comments" data-ng-href="#!/comments/{{comment._id}}" class="panel list-group-item">
+			<div class="panel-heading">
+       
+                <small class="list-group-item-text">
+                    Posted on
+                    <span data-ng-bind="comment.created | date:'medium'"></span>
+                    by
+                    <span data-ng-bind="comment.user.displayName"></span>
+                </small>
+
+            </div>
+			<div class="panel-body">
+       
+                <h4 class="list-group-item-heading" data-ng-bind="comment.name" style="margin-bottom: 20px;"></h4>
+                <p class="list-group-item-body" data-ng-bind="comment.comment_body"></p>
+
+            </div>
+        </a>
+    </div>
+    <div class="alert alert-warning text-center" data-ng-hide="!comments.$resolved || comments.length">
+    	No Comments yet, why don't you <a href="/#!/comments/create">create one</a>?
+    </div>
+</section>

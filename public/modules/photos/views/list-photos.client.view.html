@@ -1,0 +1,75 @@
+<div class="alert-bar">
+    
+    <!-- Subscribe to success flash messages. -->
+    <div class="an-alert alert success alert-dismissable" flash-alert="success" active-class="in">
+        <span class="alert-message">{{flash.message}}</span>
+    </div>
+
+    <!-- Subscribe to error flash messages. -->
+    <div class="an-alert alert error alert-dismissable" flash-alert="error" active-class="in">
+        <span class="alert-message">{{flash.message}}</span>
+    </div>
+
+</div>
+
+
+
+<section id="article-list-wrapper" data-ng-controller="PhotosController" data-ng-init="find(authentication.user)">
+
+    <div class="page-header">
+        <h1>View All Photos</h1>
+        <h3>In the order they were created</h3>
+    </div>
+
+    <div class="list-group">
+
+        <div class="a-photo row col-lg-6" data-ng-repeat="photo in photos | orderBy: sort">
+            <div class="panel panel-primary">
+                
+                <div class="panel-heading panel-primary">
+                    <small class="list-group-item-text">
+                        Posted on
+                        <span data-ng-bind="photo.created | date:'medium'"></span>
+                        by
+                        <span data-ng-bind="photo.user.displayName"></span>
+                    </small>
+                </div>
+
+                <div class="panel-body col-lg-12">
+
+                    <h2 class="list-group-item-heading" data-ng-bind="photo.name"></h2>
+                    <h3>Score: <span ng-bind="photo.score"></span></h3>
+                    
+
+
+                    <a data-ng-href="#!/photos/{{photo._id}}" class="list-group-item" ng-swipe-right="hide(index)">
+                        
+                        <!-- the image -->
+                        <image src="{{photo.image}}" style="max-width:100%" />
+
+                    </a>
+
+                </div>
+                <div class="bottom-part col-lg-12">
+
+                
+                    <button id="upvote" type="button" ng-class="{disabled: isLiked}" class="btn btn-lg btn-primary" ng-click="upVote(photo)">Upvote</button>
+                    <p class="likes-indicator">Upvotes: {{photo.likes.length}}</p>
+                    <button id="downvote" type="button" ng-class="{disabled: isDisLiked}" class="btn btn-lg btn-danger" ng-click="downVote(photo)">Downvote</button>
+                    <p class="likes-indicator">Downvotes: {{photo.dislikes.length}}</p>
+                    
+                </div>
+
+                <div class="clear"></div>
+
+            </div>
+
+
+        </div>
+        
+       
+    </div>
+    <div class="alert alert-warning text-center" data-ng-hide="!photos.$resolved || photos.length">
+    	No Photos yet, why don't you <a href="/#!/photos/create">create one</a>?
+    </div>
+</section>

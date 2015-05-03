@@ -1,0 +1,49 @@
+<section id="article-list-wrapper" data-ng-controller="ArticlesController" data-ng-init="find()">
+
+
+	<div class="alert-bar">
+	    
+	    <!-- Subscribe to success flash messages. -->
+	    <div class="an-alert alert success alert-dismissable" flash-alert="success" active-class="in">
+	        <span class="alert-message">{{flash.message}}</span>
+	    </div>
+
+	    <!-- Subscribe to error flash messages. -->
+	    <div class="an-alert alert error alert-dismissable" flash-alert="error" active-class="in">
+	        <span class="alert-message">{{flash.message}}</span>
+	    </div>
+
+	</div>
+
+
+	<div class="page-header">
+		<h1>Blog Posts</h1>
+	</div>
+	<div class="list-group">
+		
+	</div>
+
+	<div class="an-article panel panel-default col-lg-6"  data-ng-repeat="article in articles" >
+	  <!-- Default panel contents -->
+	  <div class="panel-heading">
+  		<small class="list-group-item-text">
+  			Posted on
+  			<span data-ng-bind="article.created | date:'mediumDate'"></span>
+  			by
+  			<span data-ng-bind="article.user.displayName"></span>
+  		</small>
+	  </div>
+	  <div class="panel-body">
+        <a class="list-group-item" data-ng-href="#!/articles/{{article._id}}">
+    		
+    		<h4 class="list-group-item-heading" data-ng-bind="article.title"></h4>
+    		<p class="list-group-item-text" data-ng-bind="article.content"></p>
+    	</a>
+	  </div>
+
+	</div>
+
+	<div class="alert alert-warning text-center" data-ng-if="articles.$resolved && !articles.length">
+		No posts yet, why don't you <a href="/#!/articles/create">create one</a>?
+	</div>
+</section>

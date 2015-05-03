@@ -1,0 +1,108 @@
+<!-- Subscribe to success flash messages. -->
+<div class="alert-bar alert success" flash-alert="success" active-class="in">
+    <div class="an-alert">
+    	
+    	<span class="alert-message">{{flash.message}}</span>
+    	
+    </div>
+</div>
+
+<!-- Subscribe to error flash messages. -->
+<div class="alert-bar alert error" flash-alert="error" active-class="in">
+    <div class="an-alert">
+    	
+    	<span class="alert-message">{{flash.message}}</span>
+    	
+    </div>
+</div>
+
+
+
+<section data-ng-controller="PhotosController" data-ng-init="findOne()">
+	<div class="page-header clearfix">
+		<div class="col-lg-9">
+			<h1 data-ng-bind="photo.name"></h1>
+		</div>
+		<div class="header-aside col-lg-3">
+			<a href="/#!/photos/create" class="btn btn-lg">New Photo</a>
+		</div>
+	</div>
+	<div class="photo-content cleafix">
+		
+			<div class="page-body jumbotron col-lg-9">
+				<image id="main-image" ng-src="{{photo.image}}"/>
+			</div>
+
+			<div id="side-bar" class="jumbotron col-lg-3">
+
+				<div class="score-wrapper">
+					
+					<h2>Score: {{photo.score}}</h2>
+					<p class="likes-indicator">Likes: {{photo.likes.length}}</p>
+					<button id="upvote" type="button" ng-class="{disabled: isLiked}" class="btn btn-lg btn-primary" ng-click="upVote(photo)">Upvote</button>
+					<p class="likes-indicator">Dis-likes: {{photo.dislikes.length}}</p>
+					<button id="downvote" type="button" ng-class="{disabled: isDisLiked}" class="btn btn-lg btn-danger" ng-click="downVote(photo)">Downvote</button>
+
+				</div>
+
+				<div class="random-row" data-ng-show="authentication.user._id == photo.user._id">
+					
+					<a class="btn btn-primary" href="/#!/photos/{{photo._id}}/edit">
+						<i class="glyphicon glyphicon-edit"></i>
+					</a>
+					<a class="btn btn-primary" data-ng-click="remove(photo);">
+						<i class="glyphicon glyphicon-trash"></i>
+					</a>
+
+				</div>
+
+				<div class="stats-wrapper">
+				
+					<h3>
+						Views: <span data-ng-bind="photo.views"></span>
+					</h3>
+					<p class="small-txt">
+						Posted on
+						<span data-ng-bind="photo.created | date:'mediumDate'"></span>
+						by
+						<div data-ng-bind="photo.user.displayName"></div>
+					</p class="small-txt">
+
+				</div>
+				
+			</div>
+
+		</div>
+
+
+	</div>
+
+	<div class="panel panel-default">
+			
+		<div class="panel-heading">
+			Post a comment
+		</div>
+		<div class="panel-body">
+			
+			<div class="comments-wrapper panel" data-ng-include="'/modules/comments/views/create-comment.client.view.html'"></div>
+
+		</div>
+
+	</div>
+
+	<div class="panel panel-default">
+			
+		<div class="panel-heading">
+			View Comments
+		</div>
+		<div class="panel-body">
+			
+			<div class="comments-wrapper" data-ng-include="'/modules/comments/views/list-comments.client.view.html'"></div>
+
+		</div>
+
+	</div>
+
+
+
+</section>

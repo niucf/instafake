@@ -1,0 +1,132 @@
+
+<section class="home-wrapper" data-ng-controller="HomeController">
+	
+	<div id="introduction" class="jumbotron" ng-hide="authentication.user">
+		
+		<h1>Welcome to Instafake</h1>
+
+		<div class="intro-body">
+			<!-- Indicates a successful or positive action -->
+			<a href="/#!/signin" type="button" class="btn btn-lg btn-success">Sign In &raquo;</a>
+			<a href="/#!/signup" type="button" class="btn btn-lg btn-info">Sign Up &raquo;</a>
+
+			<!-- Contextual button for informational alert messages -->
+			<a href="/#!/photos" type="button" class="btn btn-lg btn-default">View Photos &raquo;</a>
+		</div>
+
+		<p class="intro-body">This is the world's first Instagram clone built entirely with the MEAN.JS framework. Upload your photos, view other photos, see who has the best images based on their score. Upvote and downvote away.</p>
+
+		<p class="intro-body">We recommend you create a few <a href="/#!/photos/create">Photos</a> and <a href="/#!/articles/create">Articles</a> in order to make the site feel more alive. Most of the <a href="#" class="btn btn-success">Upvote</a> and <button class="btn btn-danger">Downvote</button> buttons will create angular flash notications app-wide to all users via socket.io.</p>
+
+		<p class="intro-body">Please, look around and enjoy your stay.</p>
+
+	</div>
+
+	<div class="jumbotron" ng-show="authentication.user">
+		
+		<h1>Welcome Home, {{authentication.user.firstName}}</h1>
+
+		<p>From here, you can view <a href="/#!/articles">Blog Posts</a> or <a href="/#!/photos">Photos</a></p>
+
+		<!-- Contextual button for informational alert messages -->
+		<a href="/#!/photos" type="button" class="btn btn-lg btn-default">View Photos &raquo;</a>
+
+	</div>
+
+	<div class="row" ng-show="authentication.user">
+	    <div class="col-md-6 col-md-offset-1">
+
+	      <div class="page-header">
+	        <h1>Mini-reddit</h1>
+	        <p class="intro-body">Post links here! Upvote them with the little hands!</p>
+	      </div>
+
+	      <div ng-repeat="post in posts | orderBy:'-upvotes'">
+	        <span class="glyphicon glyphicon-thumbs-up"
+	          ng-click="incrementUpvotes(post)"></span>
+	        {{post.upvotes}}
+	        <span style="font-size:20px; margin-left:10px;">
+	          <a ng-show="post.link" href="{{post.link}}">
+	            {{post.title}}
+	          </a>
+	          <span ng-hide="post.link">
+	            {{post.title}}
+	          </span>
+	        </span>
+	      </div>
+
+	      <form ng-submit="addPost()"
+	        style="margin-top:30px;">
+	        <h3>Add a new post</h3>
+
+	        <div class="form-group">
+	          <input type="text"
+	            class="form-control"
+	            placeholder="Title"
+	            ng-model="title"></input>
+	        </div>
+	        <div class="form-group">
+	          <input type="text"
+	          class="form-control"
+	          placeholder="Link"
+	          ng-model="link"></input>
+	        </div>
+	        <button type="submit" class="btn btn-primary">Post</button>
+	      </form>
+
+	    </div>
+	  </div>
+
+
+	<div id="photos-wrapper" ng-controller="PhotosController" ng-show="authentication.user">
+		
+		<div class="jumbotron">
+			
+			<div class="panel panel-primary" ng-init="filterPhotos(photos)">
+				
+				<div class="panel-heading">
+					<h2>Recent Photos</h2>
+				</div>
+
+				<div class="a-photo row" ng-repeat="photo in photos | orderBy:'-score'">
+
+					<div class="col-lg-6">
+						<a data-ng-href="#!/photos/{{photo._id}}" class="list-group-item" ng-swipe-right="hide(index)">
+						    
+						    <!-- the image -->
+						    <image src="{{photo.image}}" style="max-width:100%" />
+
+						</a>
+					</div>
+					
+					<div class="col-lg-3">
+						
+						<h3 class="list-group-item-heading" data-ng-bind="photo.name"></h3>
+						<h4>Score: {{photo.score}}</h4>
+						<small class="list-group-item-text">
+						    Posted on
+						    <span data-ng-bind="photo.created | date:'medium'"></span>
+						    by
+						    <span data-ng-bind="photo.user.displayName"></span>
+						</small>
+
+					</div>
+					<div class="col-lg-3">
+						
+						<button id="upvote" type="button" ng-class="{disabled: photo.isLiked}" class="btn btn-lg btn-primary" ng-click="upVote(photo)">Upvote</button>
+						<p class="likes-indicator">Upvotes: {{photo.likes.length}}</p>
+						<button id="downvote" type="button" ng-class="{disabled: photo.isDisLiked}" class="btn btn-lg btn-danger" ng-click="downVote(photo)">Downvote</button>
+						<p class="likes-indicator">Downvotes: {{photo.dislikes.length}}</p>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div> <!-- end photos-wrapper -->
+		
+
+</section>
